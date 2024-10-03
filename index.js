@@ -74,6 +74,21 @@ app.get('/cars', async (req, res) => {
     res.status(200).json(data.rows);
 });
 
+app.post('/cars', async (req, res) => {
+    const { make, model, year } = req.body;
+    try {
+        const result = await client.query(
+            "INSERT INTO CARS (make, model, year) VALUES ($1, $2, $3) RETURNING *",
+            [make, model, year]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
 server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 })
