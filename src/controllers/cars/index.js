@@ -85,6 +85,7 @@ class Cars{
                 where: {
                     id: parseInt(id)
                 },
+                // data : req.body
                 data: {
                     name_car: name_car,
                     year: year,
@@ -101,6 +102,9 @@ class Cars{
                     is_available: is_available
                 }
             })
+            if (!updatedCar) {
+                return res.status(404).json({ message: "Car not found" });
+            }
             res.status(200).json({ message: "Car updated successfully", car: updatedCar });
         } catch (error) {
             res.status(500).json("Internal Server Error");
