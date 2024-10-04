@@ -1,69 +1,147 @@
-const pool = require("../../config/db");
- 
-class cars{
+// const pool = require("../../config/db");
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
+
+class Cars{
     async getCars(req, res){
         try {
-            const cars = await pool.query("SELECT name_car, year, type, manufactur, price, img, id FROM cars");
-            res.status(200).json(cars.rows);
+            // const cars = await pool.query("SELECT name_car, year, type, manufactur, price, img FROM cars");
+            const cars = await prisma.cars.findMany({
+                select : {
+                    name_car: true,
+                    year: true,
+                    type: true,
+                    manufactur: true,
+                    price: true,
+                    img: true
+                }
+            })
+            res.status(200).json(cars);
         } catch (error) {
-            res.status(500).json({ message: "Server Error Bro" });
+            res.status(500).json("Internal Server Error");
+            console.log({ message: error.message });
         }
     }
- 
+
     async getCarById(req, res){
-        const id = req.params.id;
+        const { id } = req.params;
+        console.log(id);
         try {
-            const car = await pool.query("SELECT * FROM cars WHERE id = $1", [id]);
-            res.status(200).json(car.rows);
+            // const car = await pool.query("SELECT * FROM cars WHERE id = $1", [id]);
+            const car = await prisma.cars.findUnique({
+                where: {
+                    id: parseInt(id)
+                }
+            })
+            if (!car) {
+                return res.status(404).json({ message: "Car not found" });
+            }
+            // res.status(200).json(car.rows[0]);
+            res.status(200).json(car);
         } catch (error) {
-            res.status(500).json({ message: "Server Error Bro" });
-        }
+            res.status(500).json("Internal Server Error");
+            console.log({ message: error.message });
+        } //if (!car) {
+        //      return res.status(404).json({ message: "Car not found" });
+        // }
     }
-   
+
     async createCar(req, res){
-        const { name_car, year, type, manufactur, price, img, license_number, seat, baggage, transmition, description,is_driver, is_available, create_by, update_by, create_dt, update_dt } = req.body;
+        const { name_car, year, type, manufactur, price, image, license_number, seat, baggage, transmition, description, is_driver, is_available } = req.body;
         try {
-            const newCar = await pool.query(
-            `INSERT INTO cars (name_car, year, type, manufactur, price, img, license_number, seat, baggage, transmition, description, is_driver, is_available, create_by, update_by, create_dt, update_dt) 
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) 
-            RETURNING *`,
-            [name_car, year, type, manufactur, price, img, license_number, seat, baggage, transmition, description, is_driver, is_available, create_by, update_by, create_dt, update_dt]
-        );
-            res.status(201).json(newCar.rows);
+            // const newCar = await pool.query("INSERT INTO cars (name_car, year, type, manufactur, price, img, license_number, seat, baggage, transmition, description, is_driver, is_available) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *", [name_car, year, type, manufactur, price, image, license_number, seat, baggage, transmition, description, is_driver, is_available]);
+            // res.status(201).json({ message: "Car created successfully", car: newCar.rows[0] });
+            const newCar = await prisma.cars.create({
+                data: {
+                    name_car: name_car,
+                    year: year,
+                    type: type,
+                    manufactur: manufactur,
+                    price: price,
+                    img: image,
+                    license_number: license_number,
+                    seat: seat,
+                    baggage: baggage,
+                    transmition: transmition,
+                    description: description,
+                    is_driver: is_driver,
+                    is_available: is_available
+                }
+            })
+            res.status(201).json({ message: "Car created successfully", car: newCar });
         } catch (error) {
-            res.status(500).json({ message: "Server Error Bro"});
+            res.status(500).json("Internal Server Error");
+            console.log({ message: error.message });
         }
-    
     }
 
-
-   
     async updateCar(req, res){
         const { id } = req.params;
-        const { name_car, year, type, manufactur, price, img, license_number, seat, baggage, transmition, description, is_driver, is_available, } = req.body;
+        const { name_car, year, type, manufactur, price, img, license_number, seat, baggage, transmition, description, is_driver, is_available } = req.body;
         try {
-            const updatedCar = await pool.query(
-            `UPDATE cars SET name_car = $1, year = $2, type = $3, manufactur = $4, price = $5, img = $6, license_number = $7, seat = $8, baggage = $9, transmition = $10, description = $11, is_driver = $12, is_available = $13 WHERE id = $14
-            RETURNING *`,
-            [name_car, year, type, manufactur, price, img, license_number, seat, baggage, transmition, description, is_driver, is_available, id]
-        );
-            res.status(200).json(updatedCar.rows[0]);
+            // const updatedCar = await pool.query("UPDATE cars SET name_car = $1, year = $2, type = $3, manufactur = $4, price = $5, img = $6, license_number = $7, seat = $8, baggage = $9, transmition = $10, description = $11, is_driver = $12, is_available = $13 WHERE id = $14 RETURNING *", [name_car, year, type, manufactur, price, img, license_number, seat, baggage, transmition, description, is_driver, is_available, id]);
+            // res.status(200).json({ message: "Car updated successfully", car: updatedCar.rows[0] });
+            const updatedCar = await prisma.cars.update({
+                where: {
+                    id: parseInt(id)
+                },
+                data: {
+                    name_car: name_car,
+                    year: year,
+                    type: type,
+                    manufactur: manufactur,
+                    price: price,
+                    img: img,
+                    license_number: license_number,
+                    seat: seat,
+                    baggage: baggage,
+                    transmition: transmition,
+                    description: description,
+                    is_driver: is_driver,
+                    is_available: is_available
+                }
+            })
+            res.status(200).json({ message: "Car updated successfully", car: updatedCar });
         } catch (error) {
-            res.status(500).json({ message: "Server Error Bro"});
+            res.status(500).json("Internal Server Error");
+            console.log({ message: error.message });
         }
-    
     }
 
-    async deleteCar(req, res) {
+    async deleteCar(req, res){
         const { id } = req.params;
         try {
-            const cars = await pool
-            await pool.query("DELETE FROM cars WHERE id = $1", [id]);
-            if(cars.rowCount === 0) return res.status(404).json({ message: "Car not found" });
-            res.status(200).json({ message: "Car deleted successfully" });
+            // const deletedCar = await pool.query("DELETE FROM cars WHERE id = $1 RETURNING *", [id]);
+            const deletedCar = await prisma.cars.delete({
+                where: {
+                    id: parseInt(id)
+                }
+            })
+            if (deletedCar.rowCount === 0) {
+                return res.status(404).json({ message: "Car not found" });
+            }
+            // res.status(200).json({ message: "Car deleted successfully", car: deletedCar.rows[0] });
+            res.status(200).json({ message: "Car deleted successfully", car: deletedCar });
         } catch (error) {
-            res.status(500).json({ message: "Server Error Bro" });
+            res.status(500).json("Internal Server Error");
+            console.log({ message: error.message });
         }
     }
+
+    // this query can be SQL Injection
+    // async getCarById(req, res){
+    //     const { id } = req.params;
+    //     console.log(id);
+    //     try {
+    //         const car = await pool.query(`SELECT * FROM cars WHERE id = ${id}`);
+    //         res.status(200).json(car);
+    //     } catch (error) {
+    //         res.status(500).json("Internal Server Error");
+    //         console.log({ message: error.message });
+    //     }
+    // }
+    
+    
 }
-module.exports = new cars();
+
+module.exports = new Cars();

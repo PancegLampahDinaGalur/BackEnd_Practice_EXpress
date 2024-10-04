@@ -2,6 +2,8 @@ const express = require('express');
 const pg = require('pg');
 const {Client} = pg; 
 const http = require('http');
+// const express = require('express');
+// const pg = require('pg');
 const PORT = 3000;
 
 const app = express();
@@ -75,18 +77,89 @@ app.get('/cars', async (req, res) => {
 });
 
 app.post('/cars', async (req, res) => {
-    const { make, model, year } = req.body;
+    const {
+        manufactur,
+        type,
+        licenseNumber,
+        seat,
+        baggage,
+        name_car,
+        transmition,
+        description,
+        year,
+        is_driver,
+        is_available,
+        img,
+        create_by,
+        update_by,
+        create_dt,
+        update_dt,
+        price
+    } = req.body;
     try {
-        const result = await client.query(
-            "INSERT INTO CARS (make, model, year) VALUES ($1, $2, $3) RETURNING *",
-            [make, model, year]
+        const res = await client.query(
+            "INSERT INTO cars (manufactur, type, license_number, seat, baggage, name_car, transmition, description, year, is_driver, is_available, img, create_by, update_by, create_dt, update_dt, price) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17);",
+            [manufactur, type, licenseNumber, seat, baggage, name_car, transmition, description, year, is_driver, is_available, img, create_by, update_by, create_dt, update_dt, price]
         );
-        res.status(201).json(result.rows[0]);
+        res.status(201).json(`Submit data is success : ${JSON.stringify()}`);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json(`Internal Server Error : ${error}`);
     }
 });
+
+
+app.put('/cars/:id', async (req, res) => {
+    const { id } = req.params;
+    const {
+        manufactur,
+        type,
+        licenseNumber,
+        seat,
+        baggage,
+        name_car,
+        transmition,
+        description,
+        year,
+        is_driver,
+        is_available,
+        img,
+        create_by,
+        update_by,
+        create_dt,
+        update_dt,
+        price
+    } = req.body;
+   
+    try {
+        const result = await client.query(
+            `UPDATE cars 
+             SET manufactur = $1, type = $2, license_number = $3, seat = $4, baggage = $5, name_car = $6, transmition = $7, description = $8, year = $9, is_driver = $10, is_available = $11, img = $12, create_by = $13, update_by = $14, create_dt = $15, update_dt = $16, price = $17
+             WHERE id = $18`,
+            [manufactur, type, licenseNumber, seat, baggage, name_car, transmition, description, year, is_driver, is_available, img, create_by, update_by, create_dt, update_dt, price, id]
+        );
+        res.status(200).json(`Update data is success : ${JSON.stringify(result.rowCount)}`);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json(`Internal Server Error : ${error}`);
+    }
+});
+
+
+
+// app.post('/cars2', async (req, res) => {
+//     const { manufactur, type, licenseNumber, seat, baggage, name_car, transmition, description, year, is_driver, is_available, img, create_by, update_by, create_dt, update_dt, price } = req.body;
+//     try {
+//         const result = await client.query(
+//             "INSERT INTO CARS (manufactur, type, licenseNumber, seat, baggage, name_car, transmition, description, year, is_driver, is_available, img, create_by, update_by, create_dt, update_dt, price) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) RETURNING *",
+//             [manufactur, type, licenseNumber, seat, baggage, name_car, transmition, description, year, is_driver, is_available, img, create_by, update_by, create_dt, update_dt, price]
+//         );
+//         res.status(201).json(result.rows[0]);
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// });
 
 
 server.listen(PORT, () => {
