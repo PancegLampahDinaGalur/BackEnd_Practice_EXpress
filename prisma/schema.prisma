@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,4 +5,87 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model cars {
+  id             BigInt    @id @default(autoincrement())
+  manufactur     String?   @db.VarChar
+  type           String?   @db.VarChar
+  license_number String?   @db.VarChar
+  seat           Int?
+  baggage        Int?
+  name_car       String?   @db.VarChar
+  transmition    String?   @db.VarChar
+  description    String?
+  year           DateTime? @db.Date
+  is_driver      Boolean?  @default(true)
+  is_available   Boolean?
+  img            String?
+  create_by      String?   @db.VarChar
+  update_by      String?   @db.VarChar
+  create_dt      DateTime? @default(now()) @db.Timestamp(6)
+  update_dt      DateTime? @updatedAt // @default(now()) @db.Timestamp(6)
+  price          Int?
+  orders         orders[]
+
+  @@index([name_car], map: "car_name_index")
+}
+
+// /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+// model districts {
+//   kode_district  Int?
+//   kode_regencies Int?
+//   nama           String? @db.VarChar(50)
+
+//   @@index([nama], map: "idx_district_name")
+//   @@ignore
+// }
+
+// /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+// model districts_csv {
+//   kode_district  Int?
+//   kode_regencies Int?
+//   nama           String? @db.VarChar(50)
+
+//   @@map("districts.csv")
+//   @@ignore
+// }
+
+model orders {
+  id         BigInt    @id @default(autoincrement())
+  order_no   String    @unique @db.VarChar
+  users_id   BigInt
+  car_id     BigInt
+  start_time DateTime? @db.Timestamp(6)
+  end_time   DateTime? @db.Timestamp(6)
+  total      Float?
+  is_driver  Boolean?
+  is_expired Boolean?
+  status     String?   @db.VarChar
+  is_deleted Boolean?
+  create_by  String?   @db.VarChar
+  update_by  String?   @db.VarChar
+  create_dt  DateTime? @default(now()) @db.Timestamp(6)
+  update_dt  DateTime? @updatedAt
+  cars       cars?     @relation(fields: [car_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users      users?    @relation(fields: [users_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model users {
+  id             BigInt    @id @default(autoincrement())
+  full_name      String    @db.VarChar
+  email          String    @unique @db.VarChar(30)
+  addres         String    @db.VarChar
+  password       String    @db.VarChar
+  role           String    @db.VarChar
+  gender         String?   @db.VarChar
+  avatar         String?   @db.VarChar
+  phone_number   String    @unique @db.VarChar
+  driver_license String
+  birthdate      DateTime? @db.Date
+  create_by      String?   @db.VarChar
+  update_by      String?   @db.VarChar
+  create_dt      DateTime? @default(now()) @db.Timestamp(6)
+  update_dt      DateTime? @updatedAt
+  orders         orders[]
 }
