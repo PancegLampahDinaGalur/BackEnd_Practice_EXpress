@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "cars" (
-    "id" BIGSERIAL NOT NULL,
+    "id" SERIAL NOT NULL,
     "manufactur" VARCHAR,
     "type" VARCHAR,
     "license_number" VARCHAR,
@@ -16,32 +16,18 @@ CREATE TABLE "cars" (
     "create_by" VARCHAR,
     "update_by" VARCHAR,
     "create_dt" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
-    "update_dt" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
+    "update_dt" TIMESTAMP(3),
     "price" INTEGER,
 
     CONSTRAINT "cars_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "districts" (
-    "kode_district" INTEGER,
-    "kode_regencies" INTEGER,
-    "nama" VARCHAR(50)
-);
-
--- CreateTable
-CREATE TABLE "districts.csv" (
-    "kode_district" INTEGER,
-    "kode_regencies" INTEGER,
-    "nama" VARCHAR(50)
-);
-
--- CreateTable
 CREATE TABLE "orders" (
-    "id" BIGSERIAL NOT NULL,
+    "id" SERIAL NOT NULL,
     "order_no" VARCHAR NOT NULL,
-    "users_id" BIGINT NOT NULL,
-    "car_id" BIGINT NOT NULL,
+    "users_id" INTEGER NOT NULL,
+    "car_id" INTEGER NOT NULL,
     "start_time" TIMESTAMP(6),
     "end_time" TIMESTAMP(6),
     "total" DOUBLE PRECISION,
@@ -49,13 +35,17 @@ CREATE TABLE "orders" (
     "is_expired" BOOLEAN,
     "status" VARCHAR,
     "is_deleted" BOOLEAN,
+    "create_by" VARCHAR,
+    "update_by" VARCHAR,
+    "create_dt" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
+    "update_dt" TIMESTAMP(3),
 
     CONSTRAINT "orders_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "users" (
-    "id" BIGSERIAL NOT NULL,
+    "id" SERIAL NOT NULL,
     "full_name" VARCHAR NOT NULL,
     "email" VARCHAR(30) NOT NULL,
     "addres" VARCHAR NOT NULL,
@@ -68,17 +58,14 @@ CREATE TABLE "users" (
     "birthdate" DATE,
     "create_by" VARCHAR,
     "update_by" VARCHAR,
-    "create_dt" TIMESTAMP(6),
-    "update_dt" TIMESTAMP(6),
+    "create_dt" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
+    "update_dt" TIMESTAMP(3),
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
 CREATE INDEX "car_name_index" ON "cars"("name_car");
-
--- CreateIndex
-CREATE INDEX "idx_district_name" ON "districts"("nama");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "orders_order_no_key" ON "orders"("order_no");

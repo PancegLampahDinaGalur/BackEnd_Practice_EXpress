@@ -1,10 +1,22 @@
 const pool = require("../../config/db");
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 
 class Cars{
     async getCars(req, res){
         try {
-            const cars = await pool.query("SELECT name_car, year, type, manufactur, price, img FROM cars");
-            res.status(200).json(cars.rows);
+            // const cars = await pool.query("SELECT name_car, year, type, manufactur, price, img FROM cars");
+            const cars = await prisma.cars.findMany({
+                select : {
+                    name_car: true,
+                    year: true,
+                    type: true,
+                    manufactur: true,
+                    price: true,
+                    img: true
+                }
+            })
+            res.status(200).json(cars);
         } catch (error) {
             res.status(500).json("Internal Server Error");
             console.log({ message: error.message });
@@ -15,12 +27,19 @@ class Cars{
         const { id } = req.params;
         console.log(id);
         try {
-            const car = await pool.query("SELECT * FROM cars WHERE id = $1", [id]);
+            // const car = await pool.query("SELECT * FROM cars WHERE id = $1", [id]);
+            const car = await prisma.cars.findUnique({
+                where: {
+                    id: parseInt(id)
+                }
+            })
             res.status(200).json(car.rows[0]);
         } catch (error) {
             res.status(500).json("Internal Server Error");
             console.log({ message: error.message });
-        }
+        }// if (!car) {
+        //     return res.status(404).json({ message: "Car not found" });
+        // }
     }
 
     async createCar(req, res){
