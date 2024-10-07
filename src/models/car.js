@@ -14,3 +14,5 @@ class CarModel extends BaseModel{
         };
     }
 }
+
+module.exports = CarModel

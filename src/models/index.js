@@ -12,7 +12,7 @@ class BaseModel {
     }
 
     get = async ({where, include, q ={}}) => {
-        const {sortBy = "createdAt", sort = "desc", page = 1, limit = 10} = q;
+        const {sortBy = "create_dt", sort = "desc", page = 1, limit = 10} = q;
         const query = {
             select : this.select,
             where,
@@ -24,7 +24,7 @@ class BaseModel {
             take : limit,    
         };
 
-        const [resources, count] = await Promise.$transaction([
+        const [resources, count] = await prisma.$transaction([
             this.model.findMany(query),
             this.model.count(query)
         ]);
@@ -34,9 +34,12 @@ class BaseModel {
             count
         };
 };
+getById = async (id) => {
+    return this.model.findUnique({ where: { id: Number(id) } });
+  };
 
 getone = async (query) => {
-    return this.model.findUnique(query);
+    return this.model.findFirst(query);
 };
 
 set = async (data) => {
@@ -45,16 +48,16 @@ set = async (data) => {
 
 update = async (id, data) => {
     return this.model.update({
-        where : {id},
-        data
+      where: { id: Number(id) },
+      data,
     });
-};
+  };
 
 delete = async (id) => {
     return this.model.delete({
-        where : {id},
+      where: { id: Number(id) },
     });
-};
+  };
 
 count = async () => {
     return this.model.count({
