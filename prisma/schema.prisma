@@ -73,14 +73,14 @@ model orders {
 
 model users {
   id             Int       @id @default(autoincrement())
-  full_name      String    @db.VarChar
-  email          String    @unique @db.VarChar(30)
-  addres         String    @db.VarChar
+  full_name      String?   @db.VarChar
+  email          String?   @unique @db.VarChar(30)
+  addres         String?   @db.VarChar
   password       String    @db.VarChar
   role           String    @db.VarChar
   gender         String?   @db.VarChar
   avatar         String?   @db.VarChar
-  phone_number   String    @unique @db.VarChar
+  phone_number   String?   @unique @db.VarChar
   driver_license String?
   birthdate      String?
   create_by      String?   @db.VarChar
