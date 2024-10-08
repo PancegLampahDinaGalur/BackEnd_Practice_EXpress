@@ -6,12 +6,12 @@ async function encryptPassword(password) {
     return result;
 }
 
-async function chekPassword(password, encryptPassword) {
+async function checkPassword(password, encryptPassword) {
     const result = await bcrypt.compare(password, encryptPassword);
     return result;
 }
 
 module.exports = {
     encryptPassword,
-    chekPassword
+    checkPassword
 };

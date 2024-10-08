@@ -2,13 +2,13 @@
 const Joi = require("joi");
 // const { PrismaClient } = require("@prisma/client");
 // const prisma = new PrismaClient();
-const BaseController = require('../base')
-const CarModel = require('../../models/car')
+const BaseController = require("../base");
+const CarModel = require("../../models/car");
 const express = require("express");
 const router = express.Router();
+const { authorize, checkRole } = require("../../middlewares/authorization");
 
 const cars = new CarModel();
-
 
 const carSchema = Joi.object({
   name_car: Joi.string().required(),
@@ -24,28 +24,28 @@ const carSchema = Joi.object({
   baggage: Joi.number(),
   transmition: Joi.string(),
   year: Joi.string(),
-})
+});
 
 class CarsController extends BaseController {
   constructor(model) {
     super(model);
     router.get("/", this.getAll);
-    router.post("/", this.validation(carSchema), this.create);
+    router.post(
+      "/",
+      this.validation(carSchema),
+      authorize,
+      checkRole(["admin"]),
+      this.create
+    );
     router.get("/:id", this.get);
-    router.put("/:id", this.validation(carSchema), this.update);
+    router.put("/:id", this.validation(carSchema), authorize, this.update);
     router.delete("/:id", this.delete);
   }
 }
 
-
-
 new CarsController(cars);
 
 module.exports = router;
-
-
-
-
 
 // class Cars{
 //     async getCars(req, res){
@@ -189,8 +189,7 @@ module.exports = router;
 //     //         console.log({ message: error.message });
 //     //     }
 //     // }
-    
-    
+
 // }
 
 // module.exports = new Cars();
