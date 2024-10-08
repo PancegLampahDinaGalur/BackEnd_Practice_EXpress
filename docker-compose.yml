@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  nodejs:
+    image: node:16
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    command: sh -c "npm install && npm run dev"
+    environment:
+      - NODE_ENV=development
+
+  datadog:
+    container_name: car_rental_datadog
+    image: datadog/agent:latest
+    environment:
+      - DD_API_KEY=4e4940fbbb833560a4b262db9a6156fa
+      - DD_SITE=us5.datadoghq.com
+      - DD_LOGS_ENABLED=true
+      - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup/:/host/sys/cgroup:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
