@@ -38,7 +38,13 @@ class CarsController extends BaseController {
       this.create
     );
     router.get("/:id", this.get);
-    router.put("/:id", this.validation(carSchema), authorize, this.update);
+    router.put(
+      "/:id",
+      this.validation(carSchema),
+      authorize,
+      checkRole(["admin"]),
+      this.update
+    );
     router.delete("/:id", this.delete);
   }
 }
