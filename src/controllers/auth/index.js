@@ -24,6 +24,7 @@ const signupSchema = Joi.object({
       "string.pattern.base":
         "Password must contain at least 1 lowercase letter, 1 uppercase letter, 1 number, and 1 special character",
     }),
+  role: Joi.string().optional(),
 });
 
 const signinSchema = Joi.object({
@@ -62,7 +63,7 @@ class AuthController extends BaseController {
       const data = {
         email: email,
         password: password,
-        role: "customer",
+        role: req.body.role || "customer",
       };
 
       console.log(data);
