@@ -9,7 +9,7 @@ const server = http.createServer(app);
 const errorHandler = require("./src/middlewares/errorHandler");
 const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
-const swaggerDocument = require("./openApi.json");
+const swaggerDocument = require("./openapi.json");
 
 //registrasi error handler secara global
 require("./src/helpers/errors");

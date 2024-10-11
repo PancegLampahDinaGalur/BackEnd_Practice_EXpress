@@ -17,7 +17,7 @@ model cars {
   name_car       String?   @db.VarChar
   transmition    String?   @db.VarChar
   description    String?
-  year           DateTime? @db.Date
+  year           String?
   is_driver      Boolean?  @default(true)
   is_available   Boolean?
   img            String?
