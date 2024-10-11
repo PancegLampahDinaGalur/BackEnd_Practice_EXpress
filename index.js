@@ -7,13 +7,22 @@ const path = require("path");
 const app = express();
 const server = http.createServer(app);
 const errorHandler = require("./src/middlewares/errorHandler");
+const cors = require("cors");
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./openApi.json");
 
 //registrasi error handler secara global
 require("./src/helpers/errors");
 
+// menambahkan cors supaya bisa diakses dari luar
+app.use(cors());
+
 app.use(express.json());
 
 app.use("/public", express.static(path.resolve(__dirname, "public")));
+
+// supaya bisa nempel ke swagger
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 require("./src/routes")(app);
 
