@@ -33,8 +33,8 @@ class BaseModel {
       count,
     };
   };
-  getById = async (id) => {
-    return this.model.findUnique({ where: { id: Number(id) } });
+  getById = async (id, select) => {
+    return this.model.findUnique({ where: { id: Number(id) }, select });
   };
 
   getone = async (query) => {
@@ -50,6 +50,10 @@ class BaseModel {
       where: { id: Number(id) },
       data,
     });
+  };
+
+  setMany = (data) => {
+    return this.model.createMany({ data });
   };
 
   delete = async (id) => {

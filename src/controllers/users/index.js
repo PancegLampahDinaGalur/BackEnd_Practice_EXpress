@@ -4,6 +4,7 @@ const UserModel = require("../../models/users");
 const express = require("express");
 const router = express.Router();
 const { encryptPassword } = require("../../helpers/bcrypt");
+const { authorize, checkRole } = require("../../middlewares/authorization");
 
 const users = new UserModel();
 
@@ -20,6 +21,16 @@ const userSchema = Joi.object({
   driver_license: Joi.string().required(),
 });
 
+const userUpdateSchema = Joi.object({
+  full_name: Joi.string().required(),
+  role: Joi.string().allow(null),
+  addres: Joi.string().required(),
+  avatar: Joi.string().uri().allow(null),
+  gender: Joi.string(),
+  driver_license: Joi.string().allow(null),
+  birthdate: Joi.date(),
+});
+
 class UsersController extends BaseController {
   constructor(model) {
     super(model);
@@ -27,6 +38,8 @@ class UsersController extends BaseController {
     router.post(
       "/",
       this.validation(userSchema),
+      authorize,
+      checkRole("admin"),
       this.checkUnique,
       this.encryptPassword,
       this.create
@@ -34,8 +47,9 @@ class UsersController extends BaseController {
     router.get("/:id", this.get);
     router.put(
       "/:id",
-      this.validation(userSchema),
-      this.checkUnique,
+      this.validation(userUpdateSchema),
+      authorize,
+      checkRole("costumer"),
       this.update
     );
     router.delete("/:id", this.delete);

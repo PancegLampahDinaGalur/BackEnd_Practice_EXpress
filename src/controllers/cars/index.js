@@ -5,6 +5,7 @@ const Joi = require("joi");
 const BaseController = require("../base");
 const CarModel = require("../../models/car");
 const express = require("express");
+const { memory } = require("../../middlewares/upload");
 const router = express.Router();
 const { authorize, checkRole } = require("../../middlewares/authorization");
 
@@ -29,7 +30,8 @@ const carSchema = Joi.object({
 class CarsController extends BaseController {
   constructor(model) {
     super(model);
-    router.get("/", this.getAll);
+    this.searchField = ["name_car", "type", "manufactur", "year"];
+    router.get("/", this.handleFilter, this.getAll);
     router.post(
       "/",
       this.validation(carSchema),
@@ -37,6 +39,8 @@ class CarsController extends BaseController {
       checkRole(["admin"]),
       this.create
     );
+    router.get("/export", this.export("cars"));
+    router.post("/import", memory.single("file"), this.import);
     router.get("/:id", this.get);
     router.put(
       "/:id",
@@ -47,6 +51,58 @@ class CarsController extends BaseController {
     );
     router.delete("/:id", this.delete);
   }
+
+  // new CarsController(cars);
+
+  // module.exports = router;
+
+  // method ini digunakan untuk menghandle filter pencarian berdasarkan field
+  // yang di definisikan di dalam array searchField
+  // misalnya kita ingin mencari mobil berdasarkan nama, type, dan tahun
+  // maka kita dapat mengirimkan parameter query seperti ini
+  // ?search=avanza&type=sedan&yearMin=2015
+  // maka filter akan menghasilkan array seperti ini
+  // [{type: 'sedan'}, {year: {gte: 2015}}]
+  // dan di gabung dengan search akan menghasilkan object seperti ini
+  //  where: {
+  //     OR: [ // search menggunakan OR
+  //       name: {
+  //         contains: 'sedan',
+  //         mode: 'insensitive'
+  //       }
+  //     ],
+  //     AND: [{ // filter menggunakan AND
+  //       year: {
+  //         gte: 2015
+  //       }
+  //     }]
+  //  }
+  // yang akan digunakan sebagai parameter where di dalam prisma client
+  handleFilter = (req, res, next) => {
+    let filter = [];
+    if (req.query.manufactur) {
+      filter.push({ manufactur: req.query.manufactur });
+    }
+    if (req.query.type) {
+      filter.push({ type: req.query.type });
+    }
+    if (req.query.yearMin) {
+      filter.push({ year: { gte: req.query.yearMin } });
+    }
+    if (req.query.yearMax) {
+      filter.push({ year: { lte: req.query.yearMin } });
+    }
+    if (req.query.priceMin) {
+      filter.push({ price: { gte: req.query.priceMin } });
+    }
+    if (req.query.priceMax) {
+      filter.push({ price: { lte: req.query.priceMax } });
+    }
+
+    if (filter.length) this.filter = filter;
+
+    next();
+  };
 }
 
 new CarsController(cars);
