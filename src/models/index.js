@@ -1,7 +1,12 @@
 const { PrismaClient } = require("@prisma/client");
+const { query } = require("express");
 // const { skip } = require('@prisma/client/runtime/library');
 // const { query } = require('express');
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({ log: ["query"] }); // log query untuk melihat query yang dijalankan... contoh hasil (prisma:query SELECT "public"."users"."id", "public"."users"."full_name", "public"."users"."email", "public"."users"."addres", "public"."users"."password", "public"."users"."gender", "public"."users"."avatar", "public"."users"."phone_number", "public"."users"."driver_license", "public"."users"."birthdate", "public"."users"."role_id", "public"."users"."create_by", "public"."users"."update_by", "public"."users"."create_dt", "public"."users"."update_dt" FROM "public"."users" WHERE "public"."users"."email" = $1 LIMIT $2 OFFSET $3
+//prisma:query SELECT "public"."users"."id", "public"."users"."full_name", "public"."users"."email", "public"."users"."addres", "public"."users"."password", "public"."users"."gender", "public"."users"."avatar", "public"."users"."phone_number", "public"."users"."driver_license", "public"."users"."birthdate", "public"."users"."role_id", "public"."users"."create_by", "public"."users"."update_by", "public"."users"."create_dt", "public"."users"."update_dt" FROM "public"."users" WHERE ("public"."users"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+//3
+//prisma:query SELECT "public"."access"."id", "public"."access"."role_id", "public"."access"."menu_id", "public"."access"."visible", "public"."access"."grant", "public"."access"."create_by", "public"."access"."update_by", "public"."access"."create_dt", "public"."access"."update_dt" FROM "public"."access" LEFT JOIN "public"."menus" AS "j1" ON ("j1"."id") = ("public"."access"."menu_id") WHERE ("public"."access"."role_id" = $1 AND "public"."access"."grant"::jsonb = $2 AND ("j1"."menu" = $3 AND ("j1"."id" IS NOT NULL))) LIMIT $4 OFFSET $5
+//null)
 
 //calss abstract
 class BaseModel {

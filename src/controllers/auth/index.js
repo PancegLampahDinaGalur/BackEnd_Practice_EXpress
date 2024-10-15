@@ -63,7 +63,7 @@ class AuthController extends BaseController {
       const data = {
         email: email,
         password: password,
-        role: req.body.role || "customer",
+        role_id: 3 /* USER */,
       };
 
       console.log(data);

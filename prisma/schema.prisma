@@ -31,26 +31,6 @@ model cars {
   @@index([name_car], map: "car_name_index")
 }
 
-// /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-// model districts {
-//   kode_district  Int?
-//   kode_regencies Int?
-//   nama           String? @db.VarChar(50)
-
-//   @@index([nama], map: "idx_district_name")
-//   @@ignore
-// }
-
-// /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-// model districts_csv {
-//   kode_district  Int?
-//   kode_regencies Int?
-//   nama           String? @db.VarChar(50)
-
-//   @@map("districts.csv")
-//   @@ignore
-// }
-
 model orders {
   id         Int       @id @default(autoincrement())
   order_no   String    @unique @db.VarChar
@@ -74,18 +54,62 @@ model orders {
 model users {
   id             Int       @id @default(autoincrement())
   full_name      String?   @db.VarChar
-  email          String?   @unique @db.VarChar(30)
+  email          String    @unique @db.VarChar(30)
   addres         String?   @db.VarChar
   password       String    @db.VarChar
-  role           String    @db.VarChar
   gender         String?   @db.VarChar
   avatar         String?   @db.VarChar
   phone_number   String?   @unique @db.VarChar
   driver_license String?
   birthdate      String?
+  role_id        Int
   create_by      String?   @db.VarChar
   update_by      String?   @db.VarChar
   create_dt      DateTime? @default(now()) @db.Timestamp(6)
   update_dt      DateTime? @updatedAt
   orders         orders[]
+  role           roles     @relation(fields: [role_id], references: [id], onDelete: Cascade)
+}
+
+model roles {
+  id        Int       @id @default(autoincrement())
+  role      String    @unique
+  create_by String?   @db.VarChar
+  update_by String?   @db.VarChar
+  create_dt DateTime? @default(now()) @db.Timestamp(6)
+  update_dt DateTime? @updatedAt
+  access    access[]
+  users     users[]
+}
+
+model menus {
+  id          Int       @id @default(autoincrement())
+  menu        String    @unique
+  title       String
+  icon        String?
+  path        String?
+  is_submenu  Boolean?  @default(false)
+  parent_id   Int?
+  permissions String[]
+  create_by   String?   @db.VarChar
+  update_by   String?   @db.VarChar
+  create_dt   DateTime? @default(now()) @db.Timestamp(6)
+  update_dt   DateTime? @updatedAt
+  submenu     menus?    @relation("submenu", fields: [parent_id], references: [id])
+  parent      menus[]   @relation("submenu")
+  access      access[]
+}
+
+model access {
+  id        Int       @id @default(autoincrement())
+  role_id   Int
+  menu_id   Int
+  visible   Boolean   @default(false)
+  grant     Json
+  role      roles     @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  menu      menus     @relation(fields: [menu_id], references: [id], onDelete: Cascade)
+  create_by String?   @db.VarChar
+  update_by String?   @db.VarChar
+  create_dt DateTime? @default(now()) @db.Timestamp(6)
+  update_dt DateTime? @updatedAt
 }
