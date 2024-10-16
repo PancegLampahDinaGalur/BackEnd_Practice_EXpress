@@ -1,0 +1,40 @@
+version: '3.8'
+name: car_rental_api
+services:
+  app:
+    container_name: car_rental_app
+    build: .
+    ports:
+      - "3112:3111"
+    environment:
+      DATABASE_URL: "postgresql://postgres:1234@db:5432/car_rental?schema=public"
+    depends_on:
+      - db
+
+  db:
+    container_name: car_rental_db
+    image: postgres:13
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: car_rental
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  datadog:
+    container_name: car_rental_datadog
+    image: datadog/agent:latest
+    environment:
+      - DD_API_KEY=${DD_API_KEY}
+      - DD_SITE=us5.datadoghq.com
+      - DD_LOGS_ENABLED=true
+      - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup/:/host/sys/cgroup:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+volumes:
+  db_data:

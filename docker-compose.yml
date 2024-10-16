@@ -1,17 +1,31 @@
 version: "3.8"
 
 services:
-  nodejs:
-    image: node:16
-    working_dir: /app
-    volumes:
-      - .:/app
-      - /app/node_modules
+  # nodejs:
+  #   image: node:16
+  #   working_dir: /app
+  #   volumes:
+  #     - .:/app
+  #     - /app/node_modules
+  #   ports:
+  #     - "4000:3000"
+  #   #command: sh -c "npm install && npm run dev"
+  #   environment:
+  #     # - NODE_ENV=development
+  #     DATABASE_URL: "postgresql://admin40:admin40@db:5432/car_rental?schema=public"
+  #   depends_on:
+  #     - postgres
+  #     - datadog
+
+  app:
+    container_name: car_rental_app
+    build: .
     ports:
       - "4000:3000"
-    command: sh -c "npm install && npm run dev"
     environment:
-      - NODE_ENV=development
+      DATABASE_URL: "postgresql://admin40:admin40@db:5432/car_rental?schema=public"
+    depends_on:
+      - db
 
   datadog:
     container_name: car_rental_datadog
@@ -26,3 +40,28 @@ services:
       - /proc/:/host/proc/:ro
       - /sys/fs/cgroup/:/host/sys/cgroup:ro
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
+
+  # postgres:
+  #   container_name: my_postgres_container
+  #   image: postgres:latest
+  #   environment:
+  #     - POSTGRES_USER=myuser
+  #     - POSTGRES_PASSWORD=mypassword
+  #     - POSTGRES_DB=mydatabase
+  #   ports:
+  #     - "5430:5432"
+  #   volumes:
+  #     - db_data:/var/lib/postgresql/data
+
+  db:
+    container_name: car_rental_db
+    image: postgres:latest
+    restart: always
+    ports:
+      - "5430:5432"
+    environment:
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+      - POSTGRES_DB=car_rental
+    volumes:
+      - /var/lib/postgresql/data

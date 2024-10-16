@@ -1,11 +1,10 @@
-# Use the official Node.js image as the base image
-FROM node:16.13
-
+# Use a compatible Node.js image as a parent image
+FROM node:18
 
 # Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copy the package.json and package-lock.json files
 COPY package*.json ./
 COPY prisma ./prisma/
 
@@ -15,10 +14,11 @@ RUN yarn install
 # Copy the rest of the application code
 COPY . .
 
-RUN npx prisma generate-
+# Generate Prisma client
+RUN npx prisma generate
 
 # Expose the port the app runs on
 EXPOSE 3000
 
-# Command to run the application
-CMD ["sh", '-c',  "npx prisma migrate dev & yarn dev"]
+# Define the command to run the app and apply migrations
+CMD ["sh", "-c", "npx prisma migrate dev && yarn dev"]
