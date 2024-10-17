@@ -54,3 +54,45 @@ describe(`POST ${signupRoute}`, () => {
       });
   });
 });
+
+describe(`POST ${logInRoute}`, () => {
+  it("should return 200 if the request is valid", (done) => {
+    request(server)
+      .post("/api/v1/auth/Signin")
+      .send(testUser)
+      .set("Accept", "application/json")
+      .then((res) => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toEqual(
+          expect.objectContaining({
+            code: 200,
+            status: "success",
+            message: "Signin success",
+            data: expect.objectContaining({
+              user: {
+                email: testUser.email,
+                addres: null,
+                avatar: null,
+                driver_license: null,
+                gender: null,
+                phone_number: null,
+                full_name: null,
+                role_id: 3,
+                birthdate: null,
+                create_by: null,
+                create_dt: expect.any(String),
+                update_by: null,
+                update_dt: expect.any(String),
+              },
+              token: expect.any(String),
+            }),
+          })
+        );
+        done();
+      })
+      .catch((e) => {
+        console.log(e);
+        done(e);
+      });
+  });
+});
