@@ -1,5 +1,5 @@
 # Use a compatible Node.js image as a parent image
-FROM node:18
+FROM node:16
 
 # Set the working directory
 WORKDIR /app
@@ -9,7 +9,7 @@ COPY package*.json ./
 COPY prisma ./prisma/
 
 # Install dependencies
-RUN yarn install
+RUN yarn install 
 
 # Copy the rest of the application code
 COPY . .
