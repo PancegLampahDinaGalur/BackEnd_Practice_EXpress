@@ -1,82 +1,28 @@
 version: "3.8"
-
+name: car_rental_api
 services:
-  # nodejs:
-  #   image: node:16
-  #   working_dir: /app
-  #   volumes:
-  #     - .:/app
-  #     - /app/node_modules
-  #   ports:
-  #     - "4000:3000"
-  #   #command: sh -c "npm install && npm run dev"
-  #   environment:
-  #     # - NODE_ENV=development
-  #     DATABASE_URL: "postgresql://admin40:admin40@db:5432/car_rental?schema=public"
-  #   depends_on:
-  #     - postgres
-  #     - datadog
-
   app:
     container_name: car_rental_app
     build: .
     ports:
-      - "4000:3000"
+      - "3112:3111"
     environment:
-      DATABASE_URL: "postgresql://admin40:admin40@db:5432/car_rental?schema=public"
+      DATABASE_URL: "postgresql://postgres:1234@db:5432/car_rental?schema=public"
     depends_on:
       - db
 
-  # datadog:
-  #   container_name: car_rental_datadog
-  #   image: datadog/agent:latest
-  #   environment:
-  #     - DD_API_KEY=4e4940fbbb833560a4b262db9a6156fa
-  #     - DD_SITE=us5.datadoghq.com
-  #     - DD_LOGS_ENABLED=true
-  #     - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock:ro
-  #     - /proc/:/host/proc/:ro
-  #     - /sys/fs/cgroup/:/host/sys/cgroup:ro
-  #     - /var/lib/docker/containers:/var/lib/docker/containers:ro
-
-  # postgres:
-  #   container_name: my_postgres_container
-  #   image: postgres:latest
-  #   environment:
-  #     - POSTGRES_USER=myuser
-  #     - POSTGRES_PASSWORD=mypassword
-  #     - POSTGRES_DB=mydatabase
-  #   ports:
-  #     - "5430:5432"
-  #   volumes:
-  #     - db_data:/var/lib/postgresql/data
-
-  # app:
-  #   container_name: car_rental_app
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "4000:3000"
-  #   environment:
-  #     DATABASE_URL: "postgresql://admin40:admin40@db:5432/car_rental?schema=public"
-  #   depends_on:
-  #     - db
-
   db:
     container_name: car_rental_db
-    image: postgres:latest
+    image: postgres:13
     restart: always
     ports:
-      - "5430:5432"
+      - "5433:5432"
     environment:
-      - POSTGRES_USER=admin40
-      - POSTGRES_PASSWORD=admin40
-      - POSTGRES_DB=car_rental
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: car_rental
     volumes:
-      - /var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
 
   nginx:
     container_name: car_rental_nginx
