@@ -1,28 +1,28 @@
 version: "3.8"
-name: car_rental_api
+
 services:
   app:
     container_name: car_rental_app
     build: .
     ports:
-      - "3112:3111"
+      - "4000:3000"
     environment:
-      DATABASE_URL: "postgresql://postgres:1234@db:5432/car_rental?schema=public"
+      DATABASE_URL: "postgresql://admin40:admin40@db:5432/car_rental?schema=public"
     depends_on:
       - db
 
   db:
     container_name: car_rental_db
-    image: postgres:13
+    image: postgres:latest
     restart: always
     ports:
-      - "5433:5432"
+      - "5430:5432"
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: car_rental
+      - POSTGRES_USER=admin40
+      - POSTGRES_PASSWORD=admin40
+      - POSTGRES_DB=car_rental
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - /var/lib/postgresql/data
 
   nginx:
     container_name: car_rental_nginx
