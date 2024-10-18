@@ -2,7 +2,6 @@
 // role  --> data access
 const { equal } = require("joi");
 const accessModel = require("../models/access");
-const ValidationError = require("nodejs/src/helpers/errors/validation");
 const access = new accessModel();
 
 function rbac(menuParam, accessParam) {

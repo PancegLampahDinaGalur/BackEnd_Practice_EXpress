@@ -72,8 +72,8 @@ services:
     ports:
       - "5430:5432"
     environment:
-      - POSTGRES_USER=myuser
-      - POSTGRES_PASSWORD=mypassword
+      - POSTGRES_USER=admin40
+      - POSTGRES_PASSWORD=admin40
       - POSTGRES_DB=car_rental
     volumes:
       - /var/lib/postgresql/data

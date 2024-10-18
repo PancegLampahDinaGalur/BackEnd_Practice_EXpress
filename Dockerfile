@@ -1,6 +1,5 @@
 # Use a compatible Node.js image as a parent image
-FROM node:16
-
+FROM node:18
 # Set the working directory
 WORKDIR /app
 
@@ -22,4 +21,4 @@ RUN npx prisma generate
 EXPOSE 3000
 
 # Define the command to run the app and apply migrations
-CMD ["sh", "-c", "npx prisma migrate deploy && yarn start"]
+CMD ["sh", "-c", "npx prisma migrate deploy && yarn seed && yarn start"]

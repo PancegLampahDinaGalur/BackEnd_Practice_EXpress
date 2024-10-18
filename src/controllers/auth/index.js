@@ -5,7 +5,7 @@ const express = require("express");
 const router = express.Router();
 const { checkPassword, encryptPassword } = require("../../helpers/bcrypt");
 const { createToken } = require("../../helpers/jwt");
-const ServerError = require("nodejs/src/helpers/errors/server");
+// const ServerError = require("nodejs/src/helpers/errors/server");
 // const bcrypt = require("bcryptjs");
 
 const users = new UserModel();
