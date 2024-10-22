@@ -17,6 +17,6 @@ jobs:
           password: ${{ secrets.VPS_PASSWORD }}
           port: 22
           script: |
-            git clone https://github.com/PancegLampahDinaGalur/BackEnd_Practice_EXpress.git
             cd /BackEnd_Practice_EXpress/
+            caddy start
             docker compose up -d --build
