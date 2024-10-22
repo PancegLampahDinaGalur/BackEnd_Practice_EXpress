@@ -17,6 +17,6 @@ jobs:
           password: ${{ secrets.VPS_PASSWORD }}
           port: 22
           script: |
-            cd /BackEnd_Practice_EXpress/
+            cd BackEnd_Practice_EXpress/
             caddy start
             docker compose up -d --build
