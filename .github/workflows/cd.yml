@@ -19,4 +19,4 @@ jobs:
           script: |
             caddy start
             cd BackEnd_Practice_EXpress/
-            docker compose up -d --build
+            docker compose up
