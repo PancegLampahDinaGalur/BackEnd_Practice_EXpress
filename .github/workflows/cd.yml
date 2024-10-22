@@ -11,27 +11,26 @@ jobs:
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v2
-      
+
       - name: Login to Dockerhub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      
+
       - name: Build and push Docker image
         run: |
           docker build -t sqfreakz/jangkau:latest .
           docker push sqfreakz/jangkau:latest
-      
+
       - name: Deploy to VPS
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.VPS_IP }}
           username: ${{ secrets.VPS_USER }}
-          password: ${{ secrets.VPS_PASSWORD }
+          password: ${{ secrets.VPS_PASSWORD }}
           port: 22
           script: |
             git clone https://github.com/PancegLampahDinaGalur/BackEnd_Practice_EXpress.git
             cd /BackEnd_Practice_EXpress/
             docker compose up -d --build
-
