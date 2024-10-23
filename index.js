@@ -10,6 +10,10 @@ const app = express();
 const errorHandler = require("./src/middlewares/errorHandler");
 const cors = require("cors");
 const routes = require("./src/routes");
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./src/swagger.json");
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 //registrasi error handler secara global
 require("./src/helpers/errors");
