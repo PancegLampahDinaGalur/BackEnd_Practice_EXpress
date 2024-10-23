@@ -13,7 +13,7 @@ const routes = require("./src/routes");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./src/swagger.json");
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument)); // untuk swagger
 
 //registrasi error handler secara global
 require("./src/helpers/errors");
