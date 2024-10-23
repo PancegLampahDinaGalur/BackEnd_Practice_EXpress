@@ -25,7 +25,7 @@ app.use(express.json());
 app.use("/public", express.static(path.resolve(__dirname, "public")));
 
 app.get("/", async (req, res) => {
-  res.status(200).send("Car Rental API");
+  res.status(200).send("Car Rental API"); // menampilkan pesan Car Rental API
 });
 
 app.use("/api/v1", routes);
