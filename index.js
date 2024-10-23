@@ -11,7 +11,7 @@ const errorHandler = require("./src/middlewares/errorHandler");
 const cors = require("cors");
 const routes = require("./src/routes");
 const swaggerUi = require("swagger-ui-express");
-const swaggerDocument = require("./src/swagger.json");
+const swaggerDocument = require("./swagger-autogen.json");
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument)); // menambahkan swagger UI
 
